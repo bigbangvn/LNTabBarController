@@ -1,0 +1,7 @@
+*/xcuserdata/*
+*.xcuserdata
+*xcworkspace/xcuserdata/*
+DerivedData/*
+xcuserdata/
+*/xcshareddata/*
+Pods/*

@@ -1,0 +1,23 @@
+PODS:
+  - LNTabBarController (0.1):
+    - SnapKit
+  - SnapKit (5.0.1)
+
+DEPENDENCIES:
+  - LNTabBarController (from `..`)
+
+SPEC REPOS:
+  trunk:
+    - SnapKit
+
+EXTERNAL SOURCES:
+  LNTabBarController:
+    :path: ".."
+
+SPEC CHECKSUMS:
+  LNTabBarController: 94a5ea64ac21f7eca0f780c3951da3576a713d4c
+  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+
+PODFILE CHECKSUM: 6595bf8f26434feb71e319119809665eea81785f
+
+COCOAPODS: 1.8.3
