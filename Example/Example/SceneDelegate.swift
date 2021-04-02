@@ -32,7 +32,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             TabItem(displayTitle: "Newsfeed", viewController: FriendsViewController(), icon: #imageLiteral(resourceName: "ic_feed2"), highlightColor: langnetColor2),
             TabItem(displayTitle: "Learn", viewController: ProfileViewController(), icon: #imageLiteral(resourceName: "round_menu_book_black_36pt"), highlightColor: langnetColor2)
         ]
-        return NavigationMenuBaseController(items)
+        let vc = NavigationMenuBaseController(items)
+        vc.tabChange = { (prev, new) in
+            print("Tab change: \(prev) \(new)")
+        }
+        return vc
     }
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {

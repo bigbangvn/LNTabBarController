@@ -26,7 +26,7 @@ final class TabNavigationMenu: UIImageView {
         super.init(coder: aDecoder)
     }
     
-    convenience init(menuItems: [TabItem], frame: CGRect) {
+    convenience init(menuItems: [TabItem], frame: CGRect, initialIndex: Int) {
         self.init(frame: frame)
         
         print(frame)
@@ -54,10 +54,10 @@ final class TabNavigationMenu: UIImageView {
         stackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        self.activateTab(tab: 2, animate: false)
+        activateTab(tab: initialIndex, animate: false)
     }
     
-    func activateTab(tab: Int, animate: Bool = true) {
+    private func activateTab(tab: Int, animate: Bool = true) {
         let w = frame.width
         let itemW = w / CGFloat(stackView.arrangedSubviews.count + 1)
         
@@ -131,7 +131,7 @@ final class TabItemView: UIView {
         iconView.image = item.icon?.withRenderingMode(.alwaysTemplate)
         iconView.contentMode = .scaleAspectFit
         iconView.tintColor = .lightGray
-        lb.text = item.displayTitle
+        lb.text = item.anyTitle()
         selectedView.backgroundColor = item.highlightColor
         
         iconView.snp.makeConstraints { make in

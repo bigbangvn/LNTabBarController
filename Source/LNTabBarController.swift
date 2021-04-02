@@ -11,9 +11,12 @@ public final class NavigationMenuBaseController: UITabBarController {
     private var customTabBar: TabNavigationMenu!
     private let tabBarHeight: CGFloat = 44
     private let tabItems: [TabItem]
+    private let initialIndex: Int
+    public var tabChange: ((_ prevTab: Int, _ currentTab: Int) -> Void)?
     
-    public init(_ tabItems: [TabItem]) {
+    public init(_ tabItems: [TabItem], initialIndex: Int = 0) {
         self.tabItems = tabItems
+        self.initialIndex = initialIndex
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -30,7 +33,7 @@ public final class NavigationMenuBaseController: UITabBarController {
     private func loadTabBar() {
         self.setupCustomTabBar(tabItems)
         self.viewControllers = tabItems.map { $0.viewController }
-        self.selectedIndex = 0
+        self.selectedIndex = initialIndex
     }
     
     // Build the custom tab bar and hide default
@@ -40,7 +43,7 @@ public final class NavigationMenuBaseController: UITabBarController {
         // hide the tab bar
         tabBar.isHidden = true
         
-        self.customTabBar = TabNavigationMenu(menuItems: items, frame: frame)
+        self.customTabBar = TabNavigationMenu(menuItems: items, frame: frame, initialIndex: initialIndex)
         self.customTabBar.translatesAutoresizingMaskIntoConstraints = false
         self.customTabBar.clipsToBounds = true
         self.customTabBar.itemTapped = self.changeTab
@@ -53,8 +56,11 @@ public final class NavigationMenuBaseController: UITabBarController {
     }
     
     func changeTab(tab: Int) {
-        self.selectedIndex = tab
-        print("selected: \(self.selectedIndex) ")
+        print("Prev tab: \(selectedIndex), selecting tab: \(tab) ")
+        tabChange?(selectedIndex, tab)
+        if tab != selectedIndex {
+            selectedIndex = tab
+        }
     }
 }
 
