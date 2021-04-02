@@ -13,9 +13,12 @@ public struct TabItem {
     let viewController: UIViewController
     let highlightColor: UIColor?
     
-    public init(displayTitle: String? = nil, viewController: UIViewController, icon: UIImage?, highlightColor: UIColor?) {
-        self.displayTitle = displayTitle
+    public init(viewController: UIViewController,
+                displayTitle: String? = nil,
+                icon: UIImage? = nil,
+                highlightColor: UIColor? = nil) {
         self.viewController = viewController
+        self.displayTitle = displayTitle
         self.icon = icon
         self.highlightColor = highlightColor
     }

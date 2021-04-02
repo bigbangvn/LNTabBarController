@@ -27,10 +27,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     private func setupNav() -> UIViewController {
         let items = [
-            TabItem(displayTitle: "Talk", viewController: HomeViewController(), icon: #imageLiteral(resourceName: "ic_phone"), highlightColor: langnetColor2),
-            TabItem(displayTitle: "Chat", viewController: CalenderViewController(), icon: #imageLiteral(resourceName: "ic_chat"), highlightColor: langnetColor2),
-            TabItem(displayTitle: "Newsfeed", viewController: FriendsViewController(), icon: #imageLiteral(resourceName: "ic_feed2"), highlightColor: langnetColor2),
-            TabItem(displayTitle: "Learn", viewController: ProfileViewController(), icon: #imageLiteral(resourceName: "round_menu_book_black_36pt"), highlightColor: langnetColor2)
+            TabItem(viewController: HomeViewController(), displayTitle: "Talk", icon: #imageLiteral(resourceName: "ic_phone"), highlightColor: langnetColor2),
+            TabItem(viewController: CalenderViewController(), displayTitle: "Chat", icon: #imageLiteral(resourceName: "ic_chat"), highlightColor: langnetColor2),
+            TabItem(viewController: FriendsViewController(), displayTitle: "Newsfeed", icon: #imageLiteral(resourceName: "ic_feed2"), highlightColor: langnetColor2),
+            TabItem(viewController: ProfileViewController(), displayTitle: "Learn", icon: #imageLiteral(resourceName: "round_menu_book_black_36pt"), highlightColor: langnetColor2)
         ]
         let vc = NavigationMenuBaseController(items)
         vc.tabChange = { (prev, new) in
