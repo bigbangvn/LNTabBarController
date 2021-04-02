@@ -128,7 +128,7 @@ final class TabItemView: UIView {
         contentStack.addArrangedSubview(iconView)
         contentStack.addArrangedSubview(lb)
         addSubview(contentStack)
-        iconView.image = item.icon?.withRenderingMode(.alwaysTemplate)
+        iconView.image = item.anyIcon()?.withRenderingMode(.alwaysTemplate)
         iconView.contentMode = .scaleAspectFit
         iconView.tintColor = .lightGray
         lb.text = item.anyTitle()

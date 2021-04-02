@@ -9,8 +9,8 @@ import UIKit
 
 public struct TabItem {
     private let displayTitle: String?
+    private let icon: UIImage?
     let viewController: UIViewController
-    let icon: UIImage?
     let highlightColor: UIColor?
     
     public init(displayTitle: String? = nil, viewController: UIViewController, icon: UIImage?, highlightColor: UIColor?) {
@@ -22,5 +22,9 @@ public struct TabItem {
     
     public func anyTitle() -> String? {
         return viewController.title ?? displayTitle
+    }
+    
+    public func anyIcon() -> UIImage? {
+        return viewController.tabBarItem.image ?? icon
     }
 }
