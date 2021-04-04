@@ -8,8 +8,7 @@
 import SnapKit
 
 public final class NavigationMenuBaseController: UITabBarController {
-    private var customTabBar: TabNavigationMenu!
-    private let tabBarHeight: CGFloat = 44
+    public private(set) var customTabBar: UIView!
     private let tabItems: [TabItem]
     private let initialIndex: Int
     public var tabChange: ((_ prevTab: Int, _ currentTab: Int) -> Void)?
@@ -38,21 +37,18 @@ public final class NavigationMenuBaseController: UITabBarController {
     
     // Build the custom tab bar and hide default
     private func setupCustomTabBar(_ items: [TabItem]) {
-        let frame = CGRect(x: tabBar.frame.origin.x, y: tabBar.frame.origin.x, width: tabBar.frame.width, height: tabBarHeight) // had to change from let frame = tabBar.frame because the default height of 49 was being passed instead of 67. The background wasn't fitting correctly so had to incrrease height by 1. Not quite sure why...
-        
         // hide the tab bar
-        tabBar.isHidden = true
+        //tabBar.isHidden = true // Affect UICollectionViewController bottom inset
+        tabBar.alpha = 0
+        let newTabBar = TabNavigationMenu(menuItems: items, frame: tabBar.frame, initialIndex: initialIndex)
+        newTabBar.itemTapped = self.changeTab
+        //newTabBar.image = UIImage(named: "tabBarbg")
+        //newTabBar.isUserInteractionEnabled = true
         
-        self.customTabBar = TabNavigationMenu(menuItems: items, frame: frame, initialIndex: initialIndex)
-        self.customTabBar.translatesAutoresizingMaskIntoConstraints = false
-        self.customTabBar.clipsToBounds = true
-        self.customTabBar.itemTapped = self.changeTab
-        
-//        customTabBar.image = UIImage(named: "tabBarbg")
-//        customTabBar.isUserInteractionEnabled = true
         // Add it to the view
-        self.view.addSubview(customTabBar)
-        customTabBar.snp.makeConstraints { $0.edges.equalTo(tabBar) }
+        view.addSubview(newTabBar)
+        newTabBar.snp.makeConstraints { $0.edges.equalTo(tabBar) }
+        customTabBar = newTabBar
     }
     
     func changeTab(tab: Int) {

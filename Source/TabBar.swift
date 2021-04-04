@@ -7,11 +7,10 @@
 
 import SnapKit
 
-final class TabNavigationMenu: UIImageView {
+final class TabNavigationMenu: UIView {
     private let stackView: UIStackView = {
         let st = UIStackView()
         st.axis = .horizontal
-        st.distribution = .fillProportionally
         return st
     }()
     
@@ -29,21 +28,24 @@ final class TabNavigationMenu: UIImageView {
     convenience init(menuItems: [TabItem], frame: CGRect, initialIndex: Int) {
         self.init(frame: frame)
         
-        print(frame)
         backgroundColor = .white
 //        image = Resources.icon("tabBarbg")
         self.isUserInteractionEnabled = true
         //self.contentMode = .scaleAspectFit
+       
+        layer.shadowOffset = CGSize(width: 0, height: -0.5)
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.1
+        layer.shadowRadius = 2
         
         let w = frame.width
         let itemW = w / CGFloat(menuItems.count + 1)
         
         for i in 0 ..< menuItems.count {
-            let isSelected = i==0
+            let isSelected = i==initialIndex
             let itemView = TabItemView(item: menuItems[i], isSelected: isSelected, index: i)
             itemView.delegate = self
-            //self.createTabItem(item: menuItems[i])
-            itemView.tag = i
+            itemView.setSelected(isSelected)
             stackView.addArrangedSubview(itemView)
             itemView.snp.makeConstraints { make in
                 make.width.equalTo(isSelected ? 2*itemW : itemW)
@@ -54,7 +56,6 @@ final class TabNavigationMenu: UIImageView {
         stackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        activateTab(tab: initialIndex, animate: false)
     }
     
     private func activateTab(tab: Int, animate: Bool = true) {
@@ -104,7 +105,7 @@ final class TabItemView: UIView {
     private lazy var lb: UILabel = {
         let lb = UILabel()
         lb.font = UIFont.systemFont(ofSize: 12)
-        lb.textColor = .white
+        lb.textColor = .black
         return lb
     }()
     private var lbWidthConstraint: Constraint?
@@ -122,15 +123,15 @@ final class TabItemView: UIView {
     init(item: TabItem, isSelected: Bool, index: Int) {
         self.item = item
         self.index = index
-        
         super.init(frame: .zero)
+
         addSubview(selectedView)
         contentStack.addArrangedSubview(iconView)
         contentStack.addArrangedSubview(lb)
         addSubview(contentStack)
         iconView.image = item.anyIcon()?.withRenderingMode(.alwaysTemplate)
         iconView.contentMode = .scaleAspectFit
-        iconView.tintColor = .lightGray
+        iconView.tintColor = .black
         lb.text = item.anyTitle()
         selectedView.backgroundColor = item.highlightColor
         
@@ -138,11 +139,11 @@ final class TabItemView: UIView {
             make.width.equalTo(iconView.snp.height)
         }
         contentStack.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().inset(10)
+            make.top.bottom.equalToSuperview().inset(12)
             make.centerX.equalToSuperview()
         }
         selectedView.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(contentStack).inset(-10)
+            make.leading.trailing.equalTo(contentStack).inset(-15)
             make.top.bottom.equalTo(contentStack).inset(-2)
         }
         lb.snp.makeConstraints { make in
@@ -160,9 +161,11 @@ final class TabItemView: UIView {
         if isSelected {
             contentStack.spacing = 5
             lbWidthConstraint?.deactivate()
+            iconView.tintColor = .black
         } else {
             lbWidthConstraint?.activate()
             contentStack.spacing = 0
+            iconView.tintColor = .lightGray
         }
     }
     
