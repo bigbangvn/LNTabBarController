@@ -6,6 +6,7 @@ Pod::Spec.new do |s|
     s.homepage     = "https://github.com/bigbangvn/LNTabBarController"
     s.author       = {"Bang Nguyen" => "trongbangvp@gmail.com"}
     s.source       = {:git => "https://github.com/bigbangvn/LNTabBarController.git", :tag => "0.1"}
+    s.static_framework = true
     s.source_files = "Source/**/*.swift"
     s.resources    = "Resources/**/*.xcassets"
     s.platform     = :ios, "10.0"
