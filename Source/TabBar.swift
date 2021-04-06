@@ -139,7 +139,12 @@ final class TabItemView: UIView {
             make.width.equalTo(iconView.snp.height)
         }
         contentStack.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().inset(12)
+            make.top.equalToSuperview().inset(12)
+            if #available(iOS 11.0, *) {
+                make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).inset(12)
+            } else {
+                make.bottomMargin.equalToSuperview()
+            }
             make.centerX.equalToSuperview()
         }
         selectedView.snp.makeConstraints { make in
