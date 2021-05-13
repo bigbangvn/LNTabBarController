@@ -7,7 +7,7 @@
 
 import SnapKit
 
-public final class NavigationMenuBaseController: UITabBarController {
+open class NavigationMenuBaseController: UITabBarController {
     public private(set) var customTabBar: UIView!
     private let tabItems: [TabItem]
     private let initialIndex: Int
@@ -19,7 +19,7 @@ public final class NavigationMenuBaseController: UITabBarController {
         super.init(nibName: nil, bundle: nil)
     }
     
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -35,20 +35,55 @@ public final class NavigationMenuBaseController: UITabBarController {
         self.selectedIndex = initialIndex
     }
     
+    private var observation: NSKeyValueObservation?
+    
+    private func hideDefaultTabBar() {
+        // Removing the upper border of the UITabBar.
+        //
+        // Note: Don't use `tabBar.clipsToBounds = true` if you want
+        // to add a custom shadow to the `tabBar`!
+        //
+        if #available(iOS 13, *) {
+            // iOS 13:
+            let appearance = tabBar.standardAppearance
+            appearance.configureWithOpaqueBackground()
+            appearance.shadowImage = nil
+            appearance.shadowColor = nil
+            tabBar.standardAppearance = appearance
+        } else {
+            // iOS 12 and below:
+            tabBar.shadowImage = UIImage()
+            tabBar.backgroundImage = UIImage()
+        }
+    }
+    
     // Build the custom tab bar and hide default
     private func setupCustomTabBar(_ items: [TabItem]) {
         // hide the tab bar
         //tabBar.isHidden = true // Affect UICollectionViewController bottom inset
-        tabBar.alpha = 0
+        //tabBar.alpha = 0
+        hideDefaultTabBar()
         let newTabBar = TabNavigationMenu(menuItems: items, frame: tabBar.frame, initialIndex: initialIndex)
         newTabBar.itemTapped = self.changeTab
         //newTabBar.image = UIImage(named: "tabBarbg")
         //newTabBar.isUserInteractionEnabled = true
         
         // Add it to the view
-        view.addSubview(newTabBar)
-        newTabBar.snp.makeConstraints { $0.edges.equalTo(tabBar) }
+        tabBar.addSubview(newTabBar)
+        newTabBar.frame = tabBar.bounds
         customTabBar = newTabBar
+        
+        // Need to use this to manually set frame -> fix case hidesBottomBarWhenPushed
+        // if use view.addSubview(newTabBar) and constraint frame to tabBar
+        // Inside the UITabBarController, tabBar can have change that break our constraints
+        observation = observe(\.self.tabBar.frame, options: [.new]) { (obj, change) in
+            guard let frame = change.newValue else { return }
+            
+            obj.customTabBar.frame = obj.tabBar.bounds
+            obj.customTabBar.isHidden = obj.tabBar.isHidden
+            obj.tabBar.bringSubview(toFront: obj.customTabBar)
+            print("Tab bar frame: \(frame) Hidden: \(obj.tabBar.isHidden)")
+        }
     }
     
     func changeTab(tab: Int) {
