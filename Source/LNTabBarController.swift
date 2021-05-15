@@ -7,14 +7,33 @@
 
 import SnapKit
 
+public struct NavMenuStyle {
+    public init(normalBgrColor: UIColor?,
+                normalFgrColor: UIColor?,
+                highlightBgrColor: UIColor?,
+                highlightFgrColor: UIColor?) {
+        self.normalBgrColor = normalBgrColor
+        self.normalFgrColor = normalFgrColor
+        self.highlightBgrColor = highlightBgrColor
+        self.highlightFgrColor = highlightFgrColor
+    }
+    
+    let normalBgrColor: UIColor?
+    let normalFgrColor: UIColor?
+    let highlightBgrColor: UIColor?
+    let highlightFgrColor: UIColor?
+}
+
 open class NavigationMenuBaseController: UITabBarController {
     public private(set) var customTabBar: UIView!
     private let tabItems: [TabItem]
     private let initialIndex: Int
+    private let style: NavMenuStyle
     public var tabChange: ((_ prevTab: Int, _ currentTab: Int) -> Void)?
     
-    public init(_ tabItems: [TabItem], initialIndex: Int = 0) {
+    public init(_ tabItems: [TabItem], style: NavMenuStyle, initialIndex: Int = 0) {
         self.tabItems = tabItems
+        self.style = style
         self.initialIndex = initialIndex
         super.init(nibName: nil, bundle: nil)
     }
@@ -63,7 +82,10 @@ open class NavigationMenuBaseController: UITabBarController {
         //tabBar.isHidden = true // Affect UICollectionViewController bottom inset
         //tabBar.alpha = 0
         hideDefaultTabBar()
-        let newTabBar = TabNavigationMenu(menuItems: items, frame: tabBar.frame, initialIndex: initialIndex)
+        let newTabBar = TabNavigationMenu(menuItems: items,
+                                          frame: tabBar.frame,
+                                          initialIndex: initialIndex,
+                                          style: style)
         newTabBar.itemTapped = self.changeTab
         //newTabBar.image = UIImage(named: "tabBarbg")
         //newTabBar.isUserInteractionEnabled = true
@@ -81,7 +103,7 @@ open class NavigationMenuBaseController: UITabBarController {
             
             obj.customTabBar.frame = obj.tabBar.bounds
             obj.customTabBar.isHidden = obj.tabBar.isHidden
-            obj.tabBar.bringSubview(toFront: obj.customTabBar)
+            obj.tabBar.bringSubviewToFront(obj.customTabBar)
             print("Tab bar frame: \(frame) Hidden: \(obj.tabBar.isHidden)")
         }
     }

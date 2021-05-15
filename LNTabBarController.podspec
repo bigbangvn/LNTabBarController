@@ -10,5 +10,6 @@ Pod::Spec.new do |s|
     s.source_files = "Source/**/*.swift"
     s.resources    = "Resources/**/*.xcassets"
     s.platform     = :ios, "10.0"
+    s.swift_version = '5.3'
     s.dependency 'SnapKit'
 end

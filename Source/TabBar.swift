@@ -13,7 +13,7 @@ final class TabNavigationMenu: UIView {
         st.axis = .horizontal
         return st
     }()
-    
+
     var itemTapped: ((_ tab: Int) -> Void)?
     var activeItem: Int = 0
     
@@ -25,7 +25,10 @@ final class TabNavigationMenu: UIView {
         super.init(coder: aDecoder)
     }
     
-    convenience init(menuItems: [TabItem], frame: CGRect, initialIndex: Int) {
+    convenience init(menuItems: [TabItem],
+                     frame: CGRect,
+                     initialIndex: Int,
+                     style: NavMenuStyle) {
         self.init(frame: frame)
         
         backgroundColor = .white
@@ -43,7 +46,10 @@ final class TabNavigationMenu: UIView {
         
         for i in 0 ..< menuItems.count {
             let isSelected = i==initialIndex
-            let itemView = TabItemView(item: menuItems[i], isSelected: isSelected, index: i)
+            let itemView = TabItemView(item: menuItems[i],
+                                       isSelected: isSelected,
+                                       index: i,
+                                       style: style)
             itemView.delegate = self
             itemView.setSelected(isSelected)
             stackView.addArrangedSubview(itemView)
@@ -105,35 +111,39 @@ final class TabItemView: UIView {
     private lazy var lb: UILabel = {
         let lb = UILabel()
         lb.font = UIFont.systemFont(ofSize: 12)
-        lb.textColor = .black
         return lb
     }()
     private var lbWidthConstraint: Constraint?
     
     private lazy var selectedView: UIImageView = {
         let iv = UIImageView()
-        iv.backgroundColor = .green
         //iv.image = Resources.icon("selectedTab")?.resizableImage(withCapInsets: UIEdgeInsets(top: 12, left: 20, bottom: 12, right: 20))
         return iv
     }()
     
     private let item: TabItem
     private let index: Int
+    private let style: NavMenuStyle
     
-    init(item: TabItem, isSelected: Bool, index: Int) {
+    init(item: TabItem, isSelected: Bool, index: Int, style: NavMenuStyle) {
         self.item = item
         self.index = index
+        self.style = style
         super.init(frame: .zero)
 
         addSubview(selectedView)
         contentStack.addArrangedSubview(iconView)
         contentStack.addArrangedSubview(lb)
         addSubview(contentStack)
+        
+        let fgrColor = isSelected ? style.highlightFgrColor : style.normalFgrColor
         iconView.image = item.anyIcon()?.withRenderingMode(.alwaysTemplate)
         iconView.contentMode = .scaleAspectFit
-        iconView.tintColor = .black
+        iconView.tintColor = fgrColor
+        
         lb.text = item.anyTitle()
-        selectedView.backgroundColor = item.highlightColor
+        lb.textColor = fgrColor
+        selectedView.backgroundColor = style.highlightBgrColor
         
         iconView.snp.makeConstraints { make in
             make.width.equalTo(iconView.snp.height)
@@ -141,14 +151,14 @@ final class TabItemView: UIView {
         contentStack.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(12)
             if #available(iOS 11.0, *) {
-                make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).inset(12)
+                make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).inset(10)
             } else {
                 make.bottomMargin.equalToSuperview()
             }
             make.centerX.equalToSuperview()
         }
         selectedView.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(contentStack).inset(-15)
+            make.leading.trailing.equalTo(contentStack).inset(-20)
             make.top.bottom.equalTo(contentStack).inset(-2)
         }
         lb.snp.makeConstraints { make in
@@ -166,12 +176,13 @@ final class TabItemView: UIView {
         if isSelected {
             contentStack.spacing = 5
             lbWidthConstraint?.deactivate()
-            iconView.tintColor = .black
         } else {
             lbWidthConstraint?.activate()
             contentStack.spacing = 0
-            iconView.tintColor = .lightGray
         }
+        let fgrColor = isSelected ? style.highlightFgrColor : style.normalFgrColor
+        iconView.tintColor = fgrColor
+        lb.textColor = fgrColor
     }
     
     required init?(coder: NSCoder) {

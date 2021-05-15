@@ -23,16 +23,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     
-    let langnetColor2 = UIColor.colorFromRGBHexValue(0x7BD3F6) // 0x4EFFE2)
+    let fgrColor = UIColor.colorFromRGBHexValue(0x00AAC8)
+    let bgrColor = UIColor.colorFromRGBHexValue(0xEFFDFF)
+    let normalColor = UIColor.colorFromRGBHexValue(0xBEBEBE)
 
     private func setupNav() -> UIViewController {
         let items = [
-            TabItem(viewController: HomeViewController(), displayTitle: "Talk", icon: #imageLiteral(resourceName: "ic_phone"), highlightColor: langnetColor2),
-            TabItem(viewController: CalenderViewController(), displayTitle: "Chat", icon: #imageLiteral(resourceName: "ic_chat"), highlightColor: langnetColor2),
-            TabItem(viewController: FriendsViewController(), displayTitle: "Newsfeed", icon: #imageLiteral(resourceName: "ic_feed2"), highlightColor: langnetColor2),
-            TabItem(viewController: ProfileViewController(), displayTitle: "Learn", icon: #imageLiteral(resourceName: "round_menu_book_black_36pt"), highlightColor: langnetColor2)
+            TabItem(viewController: HomeViewController(), displayTitle: "Talk", icon: #imageLiteral(resourceName: "ic_phone")),
+            TabItem(viewController: CalenderViewController(), displayTitle: "Chat", icon: #imageLiteral(resourceName: "ic_chat")),
+            TabItem(viewController: FriendsViewController(), displayTitle: "Newsfeed", icon: #imageLiteral(resourceName: "ic_feed2")),
+            TabItem(viewController: ProfileViewController(), displayTitle: "Learn", icon: #imageLiteral(resourceName: "round_menu_book_black_36pt"))
         ]
-        let vc = NavigationMenuBaseController(items)
+        let style = NavMenuStyle(normalBgrColor: nil,
+                                 normalFgrColor: normalColor,
+                                 highlightBgrColor: bgrColor,
+                                 highlightFgrColor: fgrColor)
+        let vc = NavigationMenuBaseController(items, style: style)
         vc.tabChange = { (prev, new) in
             print("Tab change: \(prev) \(new)")
         }
