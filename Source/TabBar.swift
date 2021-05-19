@@ -62,16 +62,36 @@ final class TabNavigationMenu: UIView {
         stackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        [UISwipeGestureRecognizer.Direction.left, .right].forEach { dir in
+            let gesture = UISwipeGestureRecognizer(target: self, action: #selector(didSwipe(_:)))
+            gesture.direction = dir
+            addGestureRecognizer(gesture)
+        }
+    }
+    
+    @objc private func didSwipe(_ gesture: UISwipeGestureRecognizer) {
+        switch gesture.direction {
+        case .left:
+            activateTab(tab: activeItem + 1)
+        case .right:
+            activateTab(tab: activeItem - 1)
+        default:
+            break
+        }
     }
     
     private func activateTab(tab: Int, animate: Bool = true) {
+        let numTab = stackView.arrangedSubviews.count
+        guard numTab > 1 else { return }
+        let normalizedTabIndex = tab < 0 ? numTab - 1 : tab % numTab
+        
         let w = frame.width
         let itemW = w / CGFloat(stackView.arrangedSubviews.count + 1)
         
         let updateLayout = {
             for (i, view) in self.stackView.arrangedSubviews.enumerated() {
                 if let v = view as? TabItemView {
-                    let select = i == tab
+                    let select = i == normalizedTabIndex
                     v.setSelected(select)
                     v.snp.updateConstraints { make in
                         make.width.equalTo(select ? itemW*2 : itemW)
@@ -87,8 +107,8 @@ final class TabNavigationMenu: UIView {
         } else {
             updateLayout()
         }
-        self.itemTapped?(tab)
-        self.activeItem = tab
+        self.itemTapped?(normalizedTabIndex)
+        self.activeItem = normalizedTabIndex
     }
 }
 
@@ -110,7 +130,7 @@ final class TabItemView: UIView {
     
     private lazy var lb: UILabel = {
         let lb = UILabel()
-        lb.font = UIFont.systemFont(ofSize: 12)
+        lb.font = UIFont.boldSystemFont(ofSize: 12)
         return lb
     }()
     private var lbWidthConstraint: Constraint?
@@ -149,9 +169,9 @@ final class TabItemView: UIView {
             make.width.equalTo(iconView.snp.height)
         }
         contentStack.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(12)
+            make.top.equalToSuperview().inset(14)
             if #available(iOS 11.0, *) {
-                make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).inset(10)
+                make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).inset(12)
             } else {
                 make.bottomMargin.equalToSuperview()
             }
@@ -159,7 +179,7 @@ final class TabItemView: UIView {
         }
         selectedView.snp.makeConstraints { make in
             make.leading.trailing.equalTo(contentStack).inset(-20)
-            make.top.bottom.equalTo(contentStack).inset(-2)
+            make.top.bottom.equalTo(contentStack).inset(-6)
         }
         lb.snp.makeConstraints { make in
             lbWidthConstraint = make.width.equalTo(0).constraint
