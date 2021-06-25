@@ -42,6 +42,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         vc.tabChange = { (prev, new) in
             print("Tab change: \(prev) \(new)")
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            vc.changeTab(tab: 2)
+        }
         return vc
     }
 

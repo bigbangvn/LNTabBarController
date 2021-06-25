@@ -80,7 +80,7 @@ final class TabNavigationMenu: UIView {
         }
     }
     
-    private func activateTab(tab: Int, animate: Bool = true) {
+    func activateTab(tab: Int, animate: Bool = true) {
         let numTab = stackView.arrangedSubviews.count
         guard numTab > 1 else { return }
         let normalizedTabIndex = tab < 0 ? numTab - 1 : tab % numTab

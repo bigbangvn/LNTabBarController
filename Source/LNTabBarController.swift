@@ -86,7 +86,7 @@ open class NavigationMenuBaseController: UITabBarController {
                                           frame: tabBar.frame,
                                           initialIndex: initialIndex,
                                           style: style)
-        newTabBar.itemTapped = self.changeTab
+        newTabBar.itemTapped = didChangeTab
         //newTabBar.image = UIImage(named: "tabBarbg")
         //newTabBar.isUserInteractionEnabled = true
         
@@ -108,15 +108,21 @@ open class NavigationMenuBaseController: UITabBarController {
         }
     }
     
-    func changeTab(tab: Int) {
+    private func didChangeTab(tab: Int) {
         print("Prev tab: \(selectedIndex), selecting tab: \(tab) ")
         tabChange?(selectedIndex, tab)
         if tab != selectedIndex {
             selectedIndex = tab
         }
     }
+    
+    
+    public func changeTab(tab: Int, animate: Bool = false) {
+        guard tab != selectedIndex else { return }
+        selectedIndex = tab
+        (customTabBar as? TabNavigationMenu)?.activateTab(tab: tab, animate: animate)
+    }
 }
-
 
 // code for animations with custon tab bar controller from https://stackoverflow.com/a/54774397/2166424
 extension NavigationMenuBaseController: UITabBarControllerDelegate {
