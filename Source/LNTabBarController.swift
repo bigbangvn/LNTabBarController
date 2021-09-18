@@ -11,17 +11,20 @@ public struct NavMenuStyle {
     public init(normalBgrColor: UIColor?,
                 normalFgrColor: UIColor?,
                 highlightBgrColor: UIColor?,
-                highlightFgrColor: UIColor?) {
+                highlightFgrColor: UIColor?,
+                dotColor: UIColor = .red) {
         self.normalBgrColor = normalBgrColor
         self.normalFgrColor = normalFgrColor
         self.highlightBgrColor = highlightBgrColor
         self.highlightFgrColor = highlightFgrColor
+        self.dotColor = dotColor
     }
     
     let normalBgrColor: UIColor?
     let normalFgrColor: UIColor?
     let highlightBgrColor: UIColor?
     let highlightFgrColor: UIColor?
+    let dotColor: UIColor
 }
 
 open class NavigationMenuBaseController: UITabBarController {
@@ -121,6 +124,10 @@ open class NavigationMenuBaseController: UITabBarController {
         guard tab != selectedIndex else { return }
         selectedIndex = tab
         (customTabBar as? TabNavigationMenu)?.activateTab(tab: tab, animate: animate)
+    }
+    
+    public func showDot(tab: Int, showDot: Bool) {
+        (customTabBar as? TabNavigationMenu)?.showDot(tab: tab, show: showDot)
     }
 }
 

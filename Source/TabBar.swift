@@ -80,10 +80,33 @@ final class TabNavigationMenu: UIView {
         }
     }
     
+    
+    /// Return clamped value
+    /// - Parameters:
+    ///   - index: and index, can be negative
+    ///   - n: upper bound of the range
+    /// - Returns: clamped index in range 0..<n
+    private func clampedIndex(_ index: Int, n: Int) -> Int {
+        index < 0 ? (n - abs(index) % n) : index % n
+    }
+    
+    func showDot(tab: Int, show: Bool) {
+        let numTab = stackView.arrangedSubviews.count
+        let normalizedTabIndex = clampedIndex(tab, n: numTab)
+        guard numTab > normalizedTabIndex else { return }
+        
+        guard normalizedTabIndex < stackView.arrangedSubviews.count else { return assertionFailure() }
+        if let v = stackView.arrangedSubviews[normalizedTabIndex] as? TabItemView {
+            v.showDot(show)
+        } else {
+            assertionFailure()
+        }
+    }
+    
     func activateTab(tab: Int, animate: Bool = true) {
         let numTab = stackView.arrangedSubviews.count
         guard numTab > 1 else { return }
-        let normalizedTabIndex = tab < 0 ? numTab - 1 : tab % numTab
+        let normalizedTabIndex = clampedIndex(tab, n: numTab)
         
         let w = frame.width
         let itemW = w / CGFloat(stackView.arrangedSubviews.count + 1)
@@ -127,6 +150,7 @@ final class TabItemView: UIView {
     
     private let contentStack = UIStackView()
     private let iconView = UIImageView()
+    private let dotView = CircleView()
     
     private lazy var lb: UILabel = {
         let lb = UILabel()
@@ -157,9 +181,12 @@ final class TabItemView: UIView {
         addSubview(contentStack)
         
         let fgrColor = isSelected ? style.highlightFgrColor : style.normalFgrColor
-        iconView.image = item.anyIcon()?.withRenderingMode(.alwaysTemplate)
+        iconView.image = item.normalIcon()
         iconView.contentMode = .scaleAspectFit
         iconView.tintColor = fgrColor
+        
+        iconView.addSubview(dotView)
+        dotView.backgroundColor = style.dotColor
         
         lb.text = item.anyTitle()
         lb.textColor = fgrColor
@@ -167,6 +194,11 @@ final class TabItemView: UIView {
         
         iconView.snp.makeConstraints { make in
             make.width.equalTo(iconView.snp.height)
+        }
+        dotView.snp.makeConstraints { make in
+            make.width.height.equalTo(4)
+            make.leading.equalTo(iconView.snp.trailing)
+            make.centerY.equalTo(iconView.snp.top)
         }
         contentStack.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(14)
@@ -187,6 +219,7 @@ final class TabItemView: UIView {
         if isSelected {
             setSelected(true)
         }
+        showDot(false)
         clipsToBounds = true
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
     }
@@ -202,7 +235,12 @@ final class TabItemView: UIView {
         }
         let fgrColor = isSelected ? style.highlightFgrColor : style.normalFgrColor
         iconView.tintColor = fgrColor
+        iconView.image = isSelected ? item.highlightIcon() : item.normalIcon()
         lb.textColor = fgrColor
+    }
+    
+    func showDot(_ show: Bool) {
+        dotView.isHidden = !show
     }
     
     required init?(coder: NSCoder) {

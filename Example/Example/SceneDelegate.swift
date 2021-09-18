@@ -29,19 +29,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     private func setupNav() -> UIViewController {
         let items = [
-            TabItem(viewController: HomeViewController(), displayTitle: "Talk", icon: #imageLiteral(resourceName: "ic_phone")),
-            TabItem(viewController: CalenderViewController(), displayTitle: "Chat", icon: #imageLiteral(resourceName: "ic_chat")),
-            TabItem(viewController: FriendsViewController(), displayTitle: "Newsfeed", icon: #imageLiteral(resourceName: "ic_feed2")),
-            TabItem(viewController: ProfileViewController(), displayTitle: "Learn", icon: #imageLiteral(resourceName: "round_menu_book_black_36pt"))
+            TabItem(viewController: HomeViewController(), displayTitle: "Talk", icon: #imageLiteral(resourceName: "talks.png"), selectedIcon: #imageLiteral(resourceName: "talks-fill.png")),
+            TabItem(viewController: CalenderViewController(), displayTitle: "Chat", icon: #imageLiteral(resourceName: "chats.png"), selectedIcon: #imageLiteral(resourceName: "chat-fill.png")),
+            TabItem(viewController: FriendsViewController(), displayTitle: "Newsfeed", icon: #imageLiteral(resourceName: "newsfeed.png"), selectedIcon: #imageLiteral(resourceName: "newsfeed-fill.png")),
+            TabItem(viewController: ProfileViewController(), displayTitle: "Learn", icon: #imageLiteral(resourceName: "learn.png"), selectedIcon: #imageLiteral(resourceName: "learn-fill.png"))
         ]
         let style = NavMenuStyle(normalBgrColor: nil,
                                  normalFgrColor: normalColor,
                                  highlightBgrColor: bgrColor,
-                                 highlightFgrColor: fgrColor)
+                                 highlightFgrColor: fgrColor,
+                                 dotColor: .red)
         let vc = NavigationMenuBaseController(items, style: style)
         vc.tabChange = { (prev, new) in
             print("Tab change: \(prev) \(new)")
         }
+        vc.showDot(tab: 2, showDot: true)
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             vc.changeTab(tab: 2)
         }
